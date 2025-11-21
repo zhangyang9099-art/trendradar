@@ -2907,12 +2907,17 @@ def split_content_into_batches(
         and not report_data["new_titles"]
         and not report_data["failed_ids"]
     ):
+            if (
+        not report_data["stats"]
+        and not report_data["new_titles"]
+        and not report_data["failed_ids"]
+    ):
         if mode == "incremental":
-            mode_text = "增量模式下暂无新增匹配的热点词汇"
+            mode_text = "今日无匹配热点新闻（增量模式下暂无新增符合关键词的内容）"
         elif mode == "current":
-            mode_text = "当前榜单模式下暂无匹配的热点词汇"
+            mode_text = "今日无匹配热点新闻（当前榜单模式下暂无符合关键词的内容）"
         else:
-            mode_text = "暂无匹配的热点词汇"
+            mode_text = "今日无匹配热点新闻"
         simple_content = f"📭 {mode_text}\n\n"
         final_content = base_header + simple_content + base_footer
         batches.append(final_content)
@@ -4248,11 +4253,7 @@ class NewsAnalyzer:
         """统一的通知发送逻辑，包含所有判断条件"""
         has_notification = self._has_notification_configured()
 
-        if (
-            CONFIG["ENABLE_NOTIFICATION"]
-            and has_notification
-            and self._has_valid_content(stats, new_titles)
-        ):
+                if CONFIG["ENABLE_NOTIFICATION"] and has_notification:
             send_to_notifications(
                 stats,
                 failed_ids or [],
